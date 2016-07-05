@@ -1,0 +1,51 @@
+#!/usr/bin/env ruby
+
+require 'set'
+require 'find'
+
+class FilesRecursively
+  include Enumerable
+  def initialize(starting_path)
+    @starting_path = starting_path
+  end
+
+  def each
+    Find.find(@starting_path) do |f|
+      type = case
+             when File.file?(f)
+               then yield(f)
+             end
+    end
+  end
+end
+
+def files_below(d)
+  FilesRecursively.new(d).map {|f| f.sub(/^#{d}\//, '') }
+end
+
+archs = [RbConfig::CONFIG['arch'], RbConfig::CONFIG['sitearch']]
+archdir_rx = Regexp.new("^(" + archs.join('|') + ")")
+arch_and_gemdir_rx =  Regexp.new("/(" + archs.join('|') + "|gem)")
+
+ruby_libdirs = $:.grep_v(arch_and_gemdir_rx)
+native_libdirs = $:.grep(Regexp.new(archs.join("|"))).grep_v(/gem/)
+
+requireable_rb = ruby_libdirs
+  .map {|ldir| files_below(ldir).grep_v(archdir_rx) }
+  .flatten
+  .grep(/\.rb$/)
+  .map {|f| f.gsub(/\.rb$/, '') }
+  .uniq
+
+requireable_so = native_libdirs
+  .select {|d| Dir.exists?(d) }
+  .map {|d| files_below(d) }
+  .flatten
+  .grep(/\.so$/)
+  .map {|f| f.gsub(/\.so$/, '') }
+  .uniq
+
+(requireable_rb + requireable_so).each {|s|
+  puts s
+}
+

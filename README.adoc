@@ -1,0 +1,61 @@
+= ruby-builtin-requireables
+Chris Riddoch <riddochc@gmail.com>
+:language: ruby
+:homepage: https://github.com/riddochc/ruby-builtin-requireables
+:revnumber: 0.0.1
+:revdate: 2016-07-05
+
+== Description
+
+Lists strings that may be required safely with a plain ruby installation
+
+This produces a list of strings such as "set" and "base64" that should always succeed with `require`... unless there's a broken ruby installation.
+
+== Requirements
+
+* Ruby
+
+== Installation
+
+gem install ruby-builtin-requireables
+
+== Use
+
+This program provides a script you can run, like so:
+
+   $ ruby-builtin-requireables
+   English
+   abbrev
+   base64
+   benchmark
+   ...
+
+This is meant for use in things like git commit hooks or Rakefiles for providing dependency management hints.
+
+An snippet from Rakefiles I use this in:
+
+  builtin_requireables = IO.popen("ruby-builtin-requireables").readlines.map(&:chomp)
+  
+  # ... define all_requires to be a list of all the strings given to `require` keywords
+  # ... make hashes of gem name = version, for dependencies and dev_dependencies
+
+  missing_deps = (all_requires - builtin_requireables - dependencies.keys - dev_dependencies.keys)
+  if missing_deps.length > 0
+    puts "There may be some dependencies not listed in project.yml:"
+    puts missing_deps.join(", ")
+  end
+
+== Contributing
+
+Pull requests welcome.
+
+== Contributors
+
+* Chris Riddoch
+
+== License
+
+Copyright © 2016 Chris Riddoch
+
+See LICENSE for license details
+
