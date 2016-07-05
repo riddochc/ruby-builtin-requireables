@@ -15,6 +15,7 @@ Gem::Specification.new do |s|
                    "Rakefile",
                    "bin/ruby-builtin-requireables",
                    "lib/ruby-builtin-requireables/version.rb",
+                   "lib/ruby-builtin-requireables.rb",
                    "project.yaml",
                    "ruby-builtin-requireables.gemspec"]
   s.executables = ["ruby-builtin-requireables"]
