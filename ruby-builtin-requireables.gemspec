@@ -14,7 +14,9 @@ Gem::Specification.new do |s|
                    "README.adoc",
                    "Rakefile",
                    "bin/ruby-builtin-requireables",
-                   "project.yaml"]
+                   "lib/ruby-builtin-requireables/version.rb",
+                   "project.yaml",
+                   "ruby-builtin-requireables.gemspec"]
   s.executables = ["ruby-builtin-requireables"]
 
 
