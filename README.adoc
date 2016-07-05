@@ -9,7 +9,7 @@ Chris Riddoch <riddochc@gmail.com>
 
 Lists strings that may be required safely with a plain ruby installation
 
-This produces a list of strings such as "set" and "base64" that should always succeed with `require`... unless there's a broken ruby installation.
+This produces a list of strings such as "set" and "base64" that should always succeed with require... unless there's a broken ruby installation.
 
 == Requirements
 
