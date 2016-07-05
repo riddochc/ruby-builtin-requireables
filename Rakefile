@@ -60,7 +60,9 @@ project_class = project.split(/[^A-Za-z0-9]/).map(&:capitalize).join
 version = adoc.attributes['revnumber']
 dependencies = config.fetch('dependencies', {})
 dev_dependencies = config.fetch('dev_dependencies', {})
-license = config.fetch('license') { "LGPL-3.0" }
+license = config.fetch('license') { "GPL-3.0" }
+files = filtered_project_files()
+exec_files = filtered_project_files().select {|f| f.start_with?("bin/") }.map {|f| f.gsub(%r{bin/}, '') }
 
 gemspec_template = <<GEMSPEC
 Gem::Specification.new do |s|
@@ -68,13 +70,17 @@ Gem::Specification.new do |s|
   s.version     = "<%= version %>"
   s.licenses    = ["<%= license %>"]
   s.platform    = Gem::Platform::RUBY
-  s.summary     = "<%= summary %>"
-  s.description = "<%= description %>"
+  s.summary     = <%= summary.inspect %>
+  s.description = <%= description.inspect %>
   s.authors     = ["<%= adoc.author %>"]
   s.email       = "<%= adoc.attributes['email'] %>"
   s.date        = "<%= Date.today %>"
-  s.files       = [<%= filtered_project_files().map{|f| '"' + f + '"' }.join(",\n                   ") %>]
   s.homepage    = "<%= adoc.attributes['homepage'] %>"
+
+  s.files       = [<%= files.map{|f| '"' + f + '"' }.join(",\n                   ") %>]
+% if exec_files.length > 0
+  s.executables = [<%= exec_files.map{|f| '"' + f + '"' }.join(",\n                   ") %>]
+% end
 
 % dependencies.each_pair do |req, vers|
   s.add_dependency "<%= req %>", "<%= vers %>"
